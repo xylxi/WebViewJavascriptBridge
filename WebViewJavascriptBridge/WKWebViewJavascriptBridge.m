@@ -133,15 +133,19 @@
     }
 }
 
+// 拦截 URL 根据 scheme 走不同处理
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
     if (webView != _webView) { return; }
     NSURL *url = navigationAction.request.URL;
     __strong typeof(_webViewDelegate) strongDelegate = _webViewDelegate;
-
+    // 如果是WebViewJavascriptBridge发送或者接受的消息，则特殊处理。否则按照正常流程处理
     if ([_base isWebViewJavascriptBridgeURL:url]) {
         if ([_base isBridgeLoadedURL:url]) {
+            // 第一次注入JS代码
+            // __bridge_loaded__ 初始化环境
             [_base injectJavascriptFile];
         } else if ([_base isQueueMessageURL:url]) {
+            // 执行从 js 过来的消息
             [self WKFlushMessageQueue];
         } else {
             [_base logUnkownMessage:url];

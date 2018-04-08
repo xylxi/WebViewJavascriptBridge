@@ -1,0 +1,474 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+            <title>web组件协议调用</title>
+            <link rel="stylesheet" type="text/css" href="../css/bootstrap/bootstrap.min.css"/>
+            <script src="../js/jquery.min.js"></script>
+            <script src="../js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title">js_log</h3>
+            </div>
+            <div class="panel-body" id="log">
+                log
+            </div>
+        </div>
+        <table class="table table-striped">
+            <caption>js调用native-demo</caption>
+            <thead>
+                <tr>
+                    <th>方法</th>
+                    <th>参数</th>
+                    <th>js->native</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>setTitleBar</td>
+                    <td>title</td>
+                    <td>
+                        <button id="btn0" type="button" class="btn btn-default">测试</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>getDeviceInfo</td>
+                    <td>无</td>
+                    <td>
+                        <button id="btn1" type="button" class="btn btn-default">测试</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>getCityInfo</td>
+                    <td>无</td>
+                    <td>
+                        <button id="btn2" type="button" class="btn btn-default">测试</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>getUserInfo</td>
+                    <td>无</td>
+                    <td>
+                        <button id="btn3" type="button" class="btn btn-default">测试</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>makePhoneCall</td>
+                    <td>phone number</td>
+                    <td>
+                        <button id="btn4" type="button" class="btn btn-default">测试</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>showShareDialog</td>
+                    <td>无</td>
+                    <td>
+                        <button id="btn5" type="button" class="btn btn-default">测试</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>login</td>
+                    <td>无</td>
+                    <td>
+                        <button id="btn6" type="button" class="btn btn-default">测试</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>createNativeView</td>
+                    <td>无</td>
+                    <td>
+                        <button id="btn7" type="button" class="btn btn-default">测试</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>storage</td>
+                    <td>set or get</td>
+                    <td>
+                        <button id="btn8" type="button" class="btn btn-default">测试</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>createWebView</td>
+                    <td>url可能是相对地址</td>
+                    <td>
+                        <button id="btn9" type="button" class="btn btn-default">测试</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>back</td>
+                    <td>无</td>
+                    <td>
+                        <button id="btn10" type="button" class="btn btn-default">测试</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>getlocation</td>
+                    <td>无</td>
+                    <td>
+                        <button id="btn11" type="button" class="btn btn-default">测试</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>setTitleBar</td>
+                    <td>无</td>
+                    <td>
+                        <button id="btn12" type="button" class="btn btn-default">测试</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>alert</td>
+                    <td>无</td>
+                    <td>
+                        <button id="btn13" type="button" class="btn btn-default">测试</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>confirm</td>
+                    <td>无</td>
+                    <td>
+                        <button id="btn14" type="button" class="btn btn-default">测试</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>triggerEvent</td>
+                    <td>无</td>
+                    <td>
+                        <button id="btn15" type="button" class="btn btn-default">测试</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>storage_set_name=123</td>
+                    <td>无</td>
+                    <td>
+                        <button id="btn16" type="button" class="btn btn-default">测试</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>storage_get_name</td>
+                    <td>无</td>
+                    <td>
+                        <button id="btn17" type="button" class="btn btn-default">测试</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>storage_remove_name</td>
+                    <td>无</td>
+                    <td>
+                        <button id="btn18" type="button" class="btn btn-default">测试</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>storage_clear</td>
+                    <td>无</td>
+                    <td>
+                        <button id="btn19" type="button" class="btn btn-default">测试</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title">OpenApi测试</h3>
+            </div>
+            <div class="panel-body">
+                <a href="guazi://openapi/openFeedBack">我要反馈</a>
+            </div>
+        </div>
+        <script>
+            bridgeInit(function (bridge) {
+                       bridge.registerHandler('headerRightBtnClick', function (data, responseCallback) {
+                                              window.alert('headerRightBtnClick' + JSON.stringify(data));
+                                              responseCallback("okok");
+                                              });
+                       bridge.registerHandler('back', function (data, responseCallback) {
+                                              window.alert('back' + JSON.stringify(data));
+                                              responseCallback("{'preventDefault':true}");
+                                              });
+                       bridge.callHandler('updateTitle', {text: '标题'}, function () {
+                                          window.alert('updateTitle');
+                                          });
+                       });
+                       function bridgeInit(cb) {
+                           if (window.navigator.userAgent.indexOf('Android') > -1) {
+                               connectWebViewJavascriptBridge(function (bridge) {
+                                                              if (!bridge._messageHandler) {
+                                                              bridge.init(function (message, responseCallback) {
+                                                                          var data = {'Javascript Responds': 'Wee!'}
+                                                                          responseCallback(data)
+                                                                          })
+                                                              }
+                                                              cb(bridge);
+                                                              });
+                           } else {
+                               setupWebViewJavascriptBridge(function (bridge) {
+                                                            cb(bridge);
+                                                            });
+                           }
+                       }
+        function setupWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) {
+                return callback(window.WebViewJavascriptBridge);
+            }
+            if (window.WVJBCallbacks) {
+                return window.WVJBCallbacks.push(callback);
+            }
+            window.WVJBCallbacks = [callback];
+            var WVJBIframe = document.createElement('iframe');
+            WVJBIframe.style.display = 'none';
+            WVJBIframe.src = 'wvjbscheme://__BRIDGE_LOADED__';
+            document.documentElement.appendChild(WVJBIframe);
+            setTimeout(function () {
+                       document.documentElement.removeChild(WVJBIframe);
+                       }, 0);
+        }
+        function connectWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) {
+                callback(window.WebViewJavascriptBridge);
+            } else {
+                document.addEventListener('WebViewJavascriptBridgeReady', function () {
+                                          callback(window.WebViewJavascriptBridge);
+                                          }, false);
+            }
+        }
+        
+        var callbackButton = document.getElementById('btn0');
+        callbackButton.onclick = function (e) {
+            e.preventDefault()
+            showlog('js->native');
+            bridgeInit(function (bridge) {
+                       bridge.callHandler('setTitleBar', {
+                                          "right_btn_text": "nbnb",
+                                          "right_btn_icon": "",
+                                          "title": "0你好",
+                                          "backgroundColor": "#ffff00"
+                                          }, function (response) {
+                                          showlog(JSON.stringify(response));
+                                          })
+                       });
+        }
+        
+        var callbackButton = document.getElementById('btn1');
+        callbackButton.onclick = function (e) {
+            e.preventDefault()
+            showlog('js->native');
+            bridgeInit(function (bridge) {
+                       bridge.callHandler('getDeviceInfo', {'foo': 'bar'}, function (response) {
+                                          showlog(JSON.stringify(response));
+                                          })
+                       });
+        }
+        
+        var callbackButton = document.getElementById('btn2');
+        callbackButton.onclick = function (e) {
+            e.preventDefault()
+            showlog('js->native');
+            bridgeInit(function (bridge) {
+                       bridge.callHandler('getCityInfo', {}, function (response) {
+                                          showlog(JSON.stringify(response));
+                                          })
+                       });
+        }
+        
+        var callbackButton = document.getElementById('btn3');
+        callbackButton.onclick = function (e) {
+            e.preventDefault()
+            showlog('js->native');
+            bridgeInit(function (bridge) {
+                       bridge.callHandler('getUserInfo', {'userID': '13'}, function (response) {
+                                          showlog(JSON.stringify(response));
+                                          })
+                       });
+        }
+        
+        var callbackButton = document.getElementById('btn4');
+        callbackButton.onclick = function (e) {
+            e.preventDefault()
+            showlog('js->native');
+            bridgeInit(function (bridge) {
+                       bridge.callHandler('makePhoneCall', {'number': '18900000000'}, function (response) {
+                                          showlog(JSON.stringify(response));
+                                          })
+                       });
+        }
+        
+        var callbackButton = document.getElementById('btn5');
+        callbackButton.onclick = function (e) {
+            e.preventDefault()
+            showlog('js->native');
+            bridgeInit(function (bridge) {
+                       bridge.callHandler('showShareDialog', {'title':'起亚赛拉图 2010款 1.6 手动 GL','content':'content 起亚赛拉图 2010款 1.6 手动 GL','url':'http://m.guazi.com/chuxiong/3000072774x/?ifid=from_haoche_c','img':'http://image.guazistatic.com/gz01160506/14/26/e43bdcad7d25414aae626fc42eaa4ab0.jpg@base@tag=imgScale&w=96&h=96&c=1&m=2&q=88','captureScreen':false}, function (response) {
+                                          showlog(JSON.stringify(response));
+                                          })
+                       });
+        }
+        
+        var callbackButton = document.getElementById('btn6');
+        callbackButton.onclick = function (e) {
+            e.preventDefault()
+            showlog('js->native');
+            bridgeInit(function (bridge) {
+                       bridge.callHandler('login', {}, function (response) {
+                                          showlog(JSON.stringify(response));
+                                          })
+                       });
+        }
+        
+        var callbackButton = document.getElementById('btn7');
+        callbackButton.onclick = function (e) {
+            e.preventDefault()
+            showlog('js->native');
+            bridgeInit(function (bridge) {
+                       bridge.callHandler('createNativeView', {'url': 'www.baidu.com'}, function (response) {
+                                          showlog(JSON.stringify(response));
+                                          })
+                       });
+        }
+        
+        var callbackButton = document.getElementById('btn8');
+        callbackButton.onclick = function (e) {
+            e.preventDefault()
+            showlog('js->native');
+            bridgeInit(function (bridge) {
+                       bridge.callHandler('storage', {'action': 'set'}, function (response) {
+                                          showlog(JSON.stringify(response));
+                                          })
+                       });
+        }
+        var callbackButton = document.getElementById('btn9');
+        callbackButton.onclick = function (e) {
+            e.preventDefault()
+            showlog('js->native');
+            bridgeInit(function (bridge) {
+                       bridge.callHandler('createWebView', {'url': 'http://www.baidu.com'}, function (response) {
+                                          showlog(JSON.stringify(response));
+                                          })
+                       });
+        }
+        var callbackButton = document.getElementById('btn10');
+        callbackButton.onclick = function (e) {
+            e.preventDefault()
+            showlog('js->native');
+            bridgeInit(function (bridge) {
+                       bridge.callHandler('back', {}, function (response) {
+                                          showlog(JSON.stringify(response));
+                                          })
+                       });
+        }
+        var callbackButton = document.getElementById('btn11');
+        callbackButton.onclick = function (e) {
+            e.preventDefault()
+            showlog('js->native');
+            bridgeInit(function (bridge) {
+                       bridge.callHandler('getLocation', {}, function (response) {
+                                          showlog(JSON.stringify(response));
+                                          })
+                       });
+        }
+        var callbackButton = document.getElementById('btn12');
+        callbackButton.onclick = function (e) {
+            e.preventDefault()
+            showlog('js->native');
+            bridgeInit(function (bridge) {
+                       bridge.callHandler('setTitleBar', {
+                                          "right_btn_text": "",
+                                          "right_btn_icon": "tel",
+                                          "title": "12你好",
+                                          "backgroundColor": "#ffff00"
+                                          }, function (response) {
+                                          showlog(JSON.stringify(response));
+                                          })
+                       });
+        }
+        var callbackButton = document.getElementById('btn13');
+        callbackButton.onclick = function (e) {
+            e.preventDefault()
+            showlog('js->native');
+            bridgeInit(function (bridge) {
+                       bridge.callHandler('alert', {
+                                          "title": "alert标题",
+                                          "message": "消息内容",
+                                          "btn_text": "文本内容"
+                                          }, function (response) {
+                                          showlog(JSON.stringify(response));
+                                          })
+                       });
+        }
+        var callbackButton = document.getElementById('btn14');
+        callbackButton.onclick = function (e) {
+            e.preventDefault()
+            showlog('js->native');
+            bridgeInit(function (bridge) {
+                       bridge.callHandler('confirm', {
+                                          "title": "confirm标题",
+                                          "message": "消息内容",
+                                          "yes_btn_text": "是的",
+                                          "no_btn_text": "不是"
+                                          }, function (response) {
+                                          showlog(JSON.stringify(response));
+                                          })
+                       });
+        }
+        
+        var callbackButton = document.getElementById('btn15');
+        callbackButton.onclick = function (e) {
+            e.preventDefault()
+            showlog('js->native');
+            bridgeInit(function (bridge) {
+                       bridge.callHandler('triggerEvent', {"name": "zizhu_shuaxin_ok"}, function (response) {
+                                          showlog(JSON.stringify(response));
+                                          })
+                       });
+        }
+        
+        var callbackButton = document.getElementById('btn16');
+        callbackButton.onclick = function (e) {
+            e.preventDefault()
+            showlog('js->native');
+            bridgeInit(function (bridge) {
+                       bridge.callHandler('storage', {'action': 'set', 'key': 'name', 'value': '{"a":"a","b":"b"}'}, function (response) {
+                                          showlog(JSON.stringify(response));
+                                          })
+                       });
+        }
+        var callbackButton = document.getElementById('btn17');
+        callbackButton.onclick = function (e) {
+            e.preventDefault()
+            showlog('js->native');
+            bridgeInit(function (bridge) {
+                       bridge.callHandler('storage', {'action': 'get', key: 'name'}, function (response) {
+                                          showlog(JSON.stringify(response));
+                                          })
+                       });
+        }
+        var callbackButton = document.getElementById('btn18');
+        callbackButton.onclick = function (e) {
+            e.preventDefault()
+            showlog('js->native');
+            bridgeInit(function (bridge) {
+                       bridge.callHandler('storage', {'action': 'remove', 'key': 'name'}, function (response) {
+                                          showlog(JSON.stringify(response));
+                                          })
+                       });
+        }
+        var callbackButton = document.getElementById('btn19');
+        callbackButton.onclick = function (e) {
+            e.preventDefault()
+            showlog('js->native');
+            bridgeInit(function (bridge) {
+                       bridge.callHandler('storage', {'action': 'clear'}, function (response) {
+                                          showlog(JSON.stringify(response));
+                                          })
+                       });
+        }
+        
+        function showlog(data) {
+            document.getElementById("log").innerHTML = (data);
+        }
+        </script>
+    </body>
+</html>

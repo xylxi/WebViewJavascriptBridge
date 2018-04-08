@@ -15,18 +15,27 @@
 	}
 
     function setupWebViewJavascriptBridge(callback) {
+        // 第一次调用这个方法的时候，为false
         if (window.WebViewJavascriptBridge) { return callback(WebViewJavascriptBridge); }
+        // 第一次调用的时候，也是false
         if (window.WVJBCallbacks) { return window.WVJBCallbacks.push(callback); }
+        // 把callback对象赋值给对象。
         window.WVJBCallbacks = [callback];
+        // 这段代码的意思就是执行加载WebViewJavascriptBridge_JS.js中代码的作用
+        // 做上下文的初始化
         var WVJBIframe = document.createElement('iframe');
         WVJBIframe.style.display = 'none';
         WVJBIframe.src = 'https://__bridge_loaded__';
+        // 触发 WKWebView 的代理
         document.documentElement.appendChild(WVJBIframe);
+        // 移除
         setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
     }
 
+    // 驱动所有的 hander 的初始化
     setupWebViewJavascriptBridge(function(bridge) {
 		var uniqueId = 1
+        // 调试用的，无关紧要
 		function log(message, data) {
 			var log = document.getElementById('log')
 			var el = document.createElement('div')
@@ -35,14 +44,15 @@
 			if (log.children.length) { log.insertBefore(el, log.children[0]) }
 			else { log.appendChild(el) }
 		}
-
+        // 把WEB中要注册的方法注册到bridge里面
+        // 注册的方法会以 key = testJavascriptHandler, value = function 保存起来
 		bridge.registerHandler('testJavascriptHandler', function(data, responseCallback) {
 			log('ObjC called testJavascriptHandler with', data)
 			var responseData = { 'Javascript Says':'Right back atcha!' }
 			log('JS responding with', responseData)
 			responseCallback(responseData)
 		})
-
+        // 添加控件，对源码无关紧要
 		document.body.appendChild(document.createElement('br'))
 
 		var callbackButton = document.getElementById('buttons').appendChild(document.createElement('button'))

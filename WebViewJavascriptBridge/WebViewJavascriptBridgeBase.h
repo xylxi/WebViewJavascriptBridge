@@ -9,7 +9,9 @@
 
 #define kOldProtocolScheme @"wvjbscheme"
 #define kNewProtocolScheme @"https"
+// 发送javascript消息
 #define kQueueHasMessage   @"__wvjb_queue_message__"
+// 初始化 WebViewJavascriptBridge 实例的 scheme
 #define kBridgeLoaded      @"__bridge_loaded__"
 
 typedef void (^WVJBResponseCallback)(id responseData);

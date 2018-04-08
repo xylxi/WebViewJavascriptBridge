@@ -1,0 +1,14 @@
+{
+	"handlerName" : "function1",
+	"data" : {
+		"data1" : "value1"
+	},
+	"callbackId" : "callbackId"
+}
+
+{
+	"handlerName" : "function2",
+	"data" : {
+		"data1" : "value1"
+	},
+}

@@ -22,8 +22,11 @@ static int logMaxLength = 500;
 
 - (id)init {
     if (self = [super init]) {
+        // 保存着OC注册的方法
         self.messageHandlers = [NSMutableDictionary dictionary];
+        // 用于保存是实话过程中需要发送给javascirpt环境的消息
         self.startupMessageQueue = [NSMutableArray array];
+        // 用于保存OC于javascript环境相互调用的回调模块。通过_uniqueId加上时间戳来确定每个调用的回调。
         self.responseCallbacks = [NSMutableDictionary dictionary];
         _uniqueId = 0;
     }
@@ -42,6 +45,8 @@ static int logMaxLength = 500;
     _uniqueId = 0;
 }
 
+// OC 调用 js 的入口
+// 将 参数 和 方法名 (如果有需要回调，那么还要有回到id) 封装成字典
 - (void)sendData:(id)data responseCallback:(WVJBResponseCallback)responseCallback handlerName:(NSString*)handlerName {
     NSMutableDictionary* message = [NSMutableDictionary dictionary];
     
@@ -51,6 +56,7 @@ static int logMaxLength = 500;
     
     if (responseCallback) {
         NSString* callbackId = [NSString stringWithFormat:@"objc_cb_%ld", ++_uniqueId];
+        // 保存回调 id
         self.responseCallbacks[callbackId] = [responseCallback copy];
         message[@"callbackId"] = callbackId;
     }
@@ -77,19 +83,23 @@ static int logMaxLength = 500;
         
         NSString* responseId = message[@"responseId"];
         if (responseId) {
+            // 如果有这个是 OC 调用 js 后，js处理完后回调给OC
             WVJBResponseCallback responseCallback = _responseCallbacks[responseId];
             responseCallback(message[@"responseData"]);
             [self.responseCallbacks removeObjectForKey:responseId];
         } else {
+            // OC 方面处理完后，需要出发的回调
             WVJBResponseCallback responseCallback = NULL;
             NSString* callbackId = message[@"callbackId"];
             if (callbackId) {
+                // 如果有回调，那么要保证能找到
                 responseCallback = ^(id responseData) {
                     if (responseData == nil) {
                         responseData = [NSNull null];
                     }
                     
                     WVJBMessage* msg = @{ @"responseId":callbackId, @"responseData":responseData };
+                    // 去找到 js 调用 oc 后的回调，将处理后的数据返回给 js
                     [self _queueMessage:msg];
                 };
             } else {
@@ -97,24 +107,28 @@ static int logMaxLength = 500;
                     // Do nothing
                 };
             }
-            
+            // 找到 OC 注册的方法
             WVJBHandler handler = self.messageHandlers[message[@"handlerName"]];
             
             if (!handler) {
                 NSLog(@"WVJBNoHandlerException, No handler for message from JS: %@", message);
                 continue;
             }
-            
+            // 调用 OC 注册的方法
             handler(message[@"data"], responseCallback);
         }
     }
 }
 
+// 注入 WebViewJavascriptBridge
 - (void)injectJavascriptFile {
+    // 执行 js 代码
     NSString *js = WebViewJavascriptBridge_js();
     [self _evaluateJavascript:js];
+    // 环境初始化接受后，如果有消息(startupMessageQueue),就发送内容
     if (self.startupMessageQueue) {
         NSArray* queue = self.startupMessageQueue;
+        // 初始化环境结束后，就不需要了
         self.startupMessageQueue = nil;
         for (id queuedMessage in queue) {
             [self _dispatchMessage:queuedMessage];
@@ -175,6 +189,7 @@ static int logMaxLength = 500;
     }
 }
 
+// 将 OC 处理后的封装的 data 和 回调 responseId 的字典转为 js 代码
 - (void)_dispatchMessage:(WVJBMessage*)message {
     NSString *messageJSON = [self _serializeMessage:message pretty:NO];
     [self _log:@"SEND" json:messageJSON];
@@ -186,7 +201,7 @@ static int logMaxLength = 500;
     messageJSON = [messageJSON stringByReplacingOccurrencesOfString:@"\f" withString:@"\\f"];
     messageJSON = [messageJSON stringByReplacingOccurrencesOfString:@"\u2028" withString:@"\\u2028"];
     messageJSON = [messageJSON stringByReplacingOccurrencesOfString:@"\u2029" withString:@"\\u2029"];
-    
+    // data 和 回调 responseId 的字典转为 JSON字符串
     NSString* javascriptCommand = [NSString stringWithFormat:@"WebViewJavascriptBridge._handleMessageFromObjC('%@');", messageJSON];
     if ([[NSThread currentThread] isMainThread]) {
         [self _evaluateJavascript:javascriptCommand];
